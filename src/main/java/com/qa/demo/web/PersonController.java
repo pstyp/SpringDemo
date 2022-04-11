@@ -3,6 +3,8 @@ package com.qa.demo.web;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,38 +23,42 @@ public class PersonController {
 	private List<Person> peeps = new ArrayList<>();
 
 // CRUD functionality
-
+// ResponseEntity is an extension of HttpEntity that represents an HTTP response including status code, headers and body
+	
 // create
-	@PostMapping("/create")
-	public Person createPerson(@RequestBody Person p) {
+	@PostMapping("/create") // 201 - created
+	public ResponseEntity<Person> createPerson(@RequestBody Person p) {
 		this.peeps.add(p);
 		Person created = this.peeps.get(this.peeps.size() - 1);
-		return created;
+		ResponseEntity<Person> response = new ResponseEntity<Person>(created, HttpStatus.CREATED);
+		return response;
 	}
 
 // read all
-	@GetMapping("/getAll")
-	public List<Person> getAllPeeps() {
-		return this.peeps;
+	@GetMapping("/getAll") // 200 - OK
+	public ResponseEntity<List<Person>> getAllPeeps() {
+		return ResponseEntity.ok(this.peeps);
 
 	}
 
 // read one 
-	@GetMapping("/get/{id}")
+	@GetMapping("/get/{id}") // 200 - OK
 	public Person getPerson(@PathVariable Integer id) {
 		return this.peeps.get(id);
 	}
 
 // update
-	@PutMapping("/replace/{id}")
-	public Person replacePerson(@PathVariable Integer id, @RequestBody Person newPerson) {
+	@PutMapping("/replace/{id}") // 202 - accepted
+	public ResponseEntity<Person> replacePerson(@PathVariable Integer id, @RequestBody Person newPerson) {
 		Person body = this.peeps.set(id, newPerson);
-		return body;
+		ResponseEntity<Person> response = new ResponseEntity<Person>(body, HttpStatus.ACCEPTED);
+		return response;
 	}
 
 // delete
-	@DeleteMapping("/remove/{id}")
-	public void removePerson(@PathVariable Integer id) {
+	@DeleteMapping("/remove/{id}") // 204 - no content
+	public ResponseEntity<?> removePerson(@PathVariable Integer id) {
 		this.peeps.remove(id.intValue());
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
