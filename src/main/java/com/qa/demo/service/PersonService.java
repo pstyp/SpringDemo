@@ -51,6 +51,18 @@ public class PersonService {
 	// DELETE FROM PERSON WHERE ID =
 	public void removePerson(@PathVariable Integer id) {
 		this.repo.deleteById(id);
-
 	}
-}
+		
+	// SELECT * FROM Person WHERE name= 
+	public List<Person> getPeepsByName(String name) {
+		List<Person> found = this.repo.findByNameIgnoreCase(name);
+		return found;
+	}
+	// SELECT * FROM Person WHERE age= 
+	public List<Person> getPeepsByAge(Integer age) {
+		List<Person> found = this.repo.findByAge(age);
+		return found;
+	}
+	
+	}
+

@@ -67,4 +67,17 @@ public class PersonController {
 		this.service.removePerson(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
+	// read by name
+	@GetMapping("/getByName/{name}")
+	public ResponseEntity<List<Person>> getPersonByName(@PathVariable String name) {
+		List<Person> found = this.service.getPeepsByName(name);
+		return ResponseEntity.ok(found);
+	}
+	// read by age
+	@GetMapping("/getByAge/{age}")
+	public ResponseEntity<List<Person>> getPersonByAge(@PathVariable Integer age) {
+		List<Person> found = this.service.getPeepsByAge(age);
+		return ResponseEntity.ok(found);
+	}
 }
