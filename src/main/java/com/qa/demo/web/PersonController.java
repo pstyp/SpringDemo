@@ -35,7 +35,7 @@ public class PersonController {
 // create
 	@PostMapping("/create") // 201 - created
 	public ResponseEntity<Person> createPerson(@RequestBody Person p) {
-		Person created = this.service.createPerson(p);
+		Person created = this.service.create(p);
 		ResponseEntity<Person> response = new ResponseEntity<Person>(created, HttpStatus.CREATED);
 		return response;
 	}
@@ -43,20 +43,20 @@ public class PersonController {
 // read all
 	@GetMapping("/getAll") // 200 - OK
 	public ResponseEntity<List<Person>> getAllPeeps() {
-		return ResponseEntity.ok(this.service.getAllPeeps());
+		return ResponseEntity.ok(this.service.getAll());
 
 	}
 
 // read one 
 	@GetMapping("/get/{id}") // 200 - OK
 	public Person getPerson(@PathVariable Integer id) {
-		return this.service.getPerson(id);
+		return this.service.getOne(id);
 	}
 
 // update
 	@PutMapping("/replace/{id}") // 202 - accepted
 	public ResponseEntity<Person> replacePerson(@PathVariable Integer id, @RequestBody Person newPerson) {
-		Person body = this.service.replacePerson(id, newPerson);
+		Person body = this.service.replace(id, newPerson);
 		ResponseEntity<Person> response = new ResponseEntity<Person>(body, HttpStatus.ACCEPTED);
 		return response;
 	}
@@ -64,7 +64,7 @@ public class PersonController {
 // delete
 	@DeleteMapping("/remove/{id}") // 204 - no content
 	public ResponseEntity<?> removePerson(@PathVariable Integer id) {
-		this.service.removePerson(id);
+		this.service.remove(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	

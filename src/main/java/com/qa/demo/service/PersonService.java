@@ -12,7 +12,7 @@ import com.qa.demo.domain.Person;
 import com.qa.demo.repo.PersonRepo;
 
 @Service // stores the main business logic of the application
-public class PersonService {
+public class PersonService implements ServiceIF<Person>{
 
 	private PersonRepo repo;
 	
@@ -24,22 +24,22 @@ public class PersonService {
 
 //CRUD	
 	// INSERT INTO Person;
-	public Person createPerson(Person p) {
+	public Person create(Person p) {
 		Person created = this.repo.save(p);
 		return created;
 	}
    // SELECT * FROM Person;
-	public List<Person> getAllPeeps() {
+	public List<Person> getAll() {
 		return this.repo.findAll();
 	}
     // SELECT * FROM Person WHERE ID =
-	public Person getPerson(Integer id) {
+	public Person getOne(Integer id) {
 		Optional<Person> found = this.repo.findById(id);
 		return found.get();
 	}
 
 	// UPDATE
-	public Person replacePerson(Integer id, Person newPerson) {
+	public Person replace(Integer id, Person newPerson) {
 		Person existing = this.repo.findById(id).get();
 		existing.setAge(newPerson.getAge());
 		existing.setHeight(newPerson.getHeight());
@@ -49,7 +49,7 @@ public class PersonService {
 	}
 
 	// DELETE FROM PERSON WHERE ID =
-	public void removePerson(@PathVariable Integer id) {
+	public void remove(@PathVariable Integer id) {
 		this.repo.deleteById(id);
 	}
 		
