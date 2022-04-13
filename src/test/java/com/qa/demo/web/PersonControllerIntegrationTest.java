@@ -1,8 +1,11 @@
 package com.qa.demo.web;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -19,6 +24,7 @@ import com.qa.demo.domain.Person;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc //sets up the MockMvc object
+@Sql(scripts = {"classpath:person-schema.sql", "classpath:person-data.sql"}, executionPhase=ExecutionPhase.BEFORE_TEST_METHOD)
 public class PersonControllerIntegrationTest {
 
 	@Autowired // pull the MockMvc object from the context
@@ -33,7 +39,7 @@ public class PersonControllerIntegrationTest {
 	String testPersonAsJSON = this.mapper.writeValueAsString(testPerson);
 	RequestBuilder req = post("/create").contentType(MediaType.APPLICATION_JSON).content(testPersonAsJSON);
 	
-	Person testCreatedPerson = new Person(1, "John", 40, 170);
+	Person testCreatedPerson = new Person(3, "John", 40, 170);
 	String testCreatedPersonAsJSON = this.mapper.writeValueAsString(testCreatedPerson);
 	
 	ResultMatcher checkStatus = status().isCreated();
@@ -41,4 +47,16 @@ public class PersonControllerIntegrationTest {
 	
 	this.mvc.perform(req).andExpect(checkStatus).andExpect(checkBody);
 	}
+	@Test
+	void getAllTest() throws Exception {
+		RequestBuilder req = get("/getAll");
+		
+		List<Person> testPeeps = List.of(new Person(1, "John", 60, 170), new Person(2,"Anna Davey", 20, 175));
+		String json = this.mapper.writeValueAsString(testPeeps);
+		
+		ResultMatcher checkStatus = status().isOk();
+		ResultMatcher checkBody = content().json(json);
+		
+		this.mvc.perform(req).andExpect(checkStatus).andExpect(checkBody);
+	} 
 }
